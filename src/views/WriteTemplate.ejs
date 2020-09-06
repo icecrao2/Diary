@@ -1,0 +1,99 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+
+<html>
+    <head>
+      <%- include('./header.ejs') %>
+	</head>
+	
+	<body>
+			
+		<div style ="width:99%">
+			<table style = "width:60%; height:200px; margin:auto;text-align: center; border-collapse: collapse;">
+				<th colspan="3">글쓰기</th>
+				<tr><!-- 첫번째 줄 시작 -->
+					<td style="float:left;" colspan ="3" style = "text-align: center;">
+					제목 : <input id="title" type="text">&nbsp; &nbsp;
+					날씨 : 
+						<select id = "weather">
+							<%
+								for(var a = 0 ; a < weather.length ; a = a + 1)
+								{
+							%>
+									<option value="<%=weather[a]%>"><%=weather[a]%></option>
+							<%
+								}
+							%>
+						</select>&nbsp; &nbsp;
+					감정 : 
+						<select id="emotion">
+							<%
+								for(var a = 0 ; a < emotion.length ; a = a + 1)
+								{
+							%>
+									<option value="<%=emotion[a]%>"><%=emotion[a]%></option>
+							<%
+								}
+							%>
+						</select>&nbsp; &nbsp;
+					Category :
+						<select id="category">
+							<%
+								for(var a = 0 ; a < category.length ; a = a + 1)
+								{
+							%>
+									<option value="<%=category[a]%>"><%=category[a]%></option>
+							<%
+								}
+							%>
+						</select>&nbsp; &nbsp;
+					</td>
+				</tr><!-- 첫번째 줄 끝 -->
+				<tr>
+					<td colspan = "3">
+						<textarea id="content" cols="125" rows="30"></textarea>
+					</td>
+				</tr>
+				<tr>
+					<td></td>
+					<td></td>
+					<td><input style ="float:right;"id="Write" type = "button" value = "완료"></td>
+				</tr>
+			</table>
+		</div>
+
+
+		<footer>
+		<%- include('./footer.ejs') %>
+		</footer>
+</html>
+
+<script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
+<script>
+	
+	$(document).ready(function(){
+		$('#Write').click(function(){
+			var emotion = $('#emotion option:selected').val();
+			var weather = $('#weather option:selected').val();
+			var category = $('#category option:selected').val();
+			var title = $('#title').val();
+			var content = $('#content').val();
+			
+			$.ajax({
+				type: 'POST',
+				url: "/writeDiary",
+				data: {
+					"emotion":emotion,
+					"weather":weather,
+					"category":category,
+					"title":title,
+					"content":content
+				},
+				success: function(){
+					window.location.href='/Page';
+				}
+			});
+		});
+	});
+
+</script>

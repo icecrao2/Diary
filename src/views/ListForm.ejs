@@ -1,0 +1,99 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+
+<script>
+	PageNum = "<%= PageNum %>";
+	PageNum = parseInt(PageNum);
+</script>
+
+<table style = " width:70%; height:200px; margin:auto;text-align: center; border-collapse: collapse;">
+	
+	<tr>
+		<td colspan="5">
+			<input style="float:left;" id="Write" type = "button" value="글쓰기 ">
+			<input style="float:right;" type="button" value="검색">
+			<input style="float:right;" type = "text">
+			<input style="float:right" type="date" />
+			<input style="float:right" type="date" />
+		</td>
+	</tr>
+	<th style="border:1px solid black;">날짜</th>
+	<th style="border:1px solid black;">기분</th>
+	<th style="border:1px solid black;">카테고리</th>
+	<th style="border:1px solid black;">제목</th>
+	<th style="border:1px solid black;">날씨</th>
+	
+	<%
+		for(var a = 0 ; a < 7 ; a = a + 1)
+		{
+			if(typeof list[a] != 'undefined')
+			{
+	%>
+			<tr>
+				<td><%=list[a].date%></td>
+				<td><%=list[a].emotion%></td>
+				<td><%=list[a].category%></td>
+				<td><%=list[a].title%></td>
+				<td><%=list[a].weather%></td>
+			</tr>
+	<%	
+			}
+			else
+			{
+	%>
+			<tr>
+				<td colspan="5">더이상  기록이 없습니다...!</td>
+			</tr>
+	<%
+				break;
+			}
+
+
+		}
+	%>
+</table>
+<table style = "width:100%; height:200px; margin:auto;text-align: center; border-collapse: collapse;">
+	<tr>
+		<td colspan = "5">
+			
+			<%
+				if(PageNum < 3)
+				{
+			%>
+					<a href="/Page/1">1</a>&nbsp; &nbsp;
+					<a href="/Page/2">2</a>&nbsp; &nbsp;
+					<a href="/Page/3">3</a>&nbsp; &nbsp;
+					<a href="/Page/4">4</a>&nbsp; &nbsp;
+					<a href="/Page/5">5</a>
+			<%
+				}
+			%>
+
+			<%
+				if(PageNum >= 3)
+				{
+			%>	
+					
+					<a href="/Page/<%=PageNum - 2%>"><%=PageNum - 2%></a>&nbsp; &nbsp;
+					<a href="/Page/<%=PageNum - 1%>"><%=PageNum - 1%></a>&nbsp; &nbsp;
+					<a href="/Page/<%=PageNum%>"><%=PageNum%></a>&nbsp; &nbsp;
+					<a href="/Page/<%=1 + parseInt(PageNum)%>"><%=1 + parseInt(PageNum)%></a>&nbsp; &nbsp;
+					<a href="/Page/<%=2 + parseInt(PageNum)%>"><%=2 + parseInt(PageNum)%></a>
+			<%
+				}
+			%>
+		</td>
+	</tr>
+</table>
+
+
+<script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
+<script>
+	
+	$(document).ready(function(){
+		$('#Write').click(function(){
+			window.location.href = "/write";
+		});
+	});
+
+</script>

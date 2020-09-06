@@ -1,0 +1,45 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+<table style = "border: 1px solid black; border-collapse: collapse; float:left;">
+	<th colspan="3"></th>
+	<tr><!-- 첫번째 줄 시작 -->
+		<td style = "text-align: center;">ID</td>
+		<td> : </td>
+		<td>
+			<%= UserId %>
+		</td>
+	</tr><!-- 첫번째 줄 끝 -->
+	<tr><!-- 두번째 줄 시작 -->
+		<td style = "text-align: center;">
+			Name
+		</td>
+		<td> : </td>
+		<td>
+			<%= UserName %>
+		</td>
+	</tr><!-- 두번째 줄 끝 -->
+	<tr><!--세번재 줄 시작 -->
+		<td></td>
+		<td></td>
+		<td><input id="logout" style="float: right;" type = "button" value = "로그아웃"></td>
+	</tr><!--세번째 줄 끝 -->
+</table>
+
+<script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
+
+<script>
+	$(document).ready(function(){
+		$('#logout').click(function(){
+			$.ajax({
+				type: 'POST',
+				url: "/Logout",
+				data: {
+
+				},
+				success: function(){
+					window.location.href='/';
+				}
+			});
+		});
+	});
+</script>

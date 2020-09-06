@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<html>
+    <head>
+      <%- include('./header.ejs') %>
+    </head>
+    
+    <body>
+      <%
+        if(!Permission)
+        {
+      %>
+          <LoginForm>
+            <%- include('./BeforeLoginForm.ejs') %>
+          </LoginForm>
+      <%
+        }
+        else
+        {
+      %>
+          <LoginForm>
+            <%- include('./AfterLoginForm.ejs') %>
+          </LoginForm>
+          
+          <MainForm>
+            <%- include('./ListForm.ejs') %>
+          </MainForm>
+      <%
+        }
+      %>
+    <footer>
+      <%- include('./footer.ejs') %>
+  	</footer>
+    </body>
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<html>
+    <head>
+      <%- include('./header.ejs') %>
+    </head>
+	<body>
+		<div style ="width:99%">
+			<table style = "width:60%; height:200px; margin:auto;text-align: center; border-collapse: collapse;">
+				<th colspan = "3">관리</th>
+				<tr>
+					<td>category</td>
+				</tr>
+				<tr>
+					<td>
+						<select id ="category" size="8" multiple style="width:200px;">
+							<%
+								for(var a = 0 ; a < categorylist.length; a = a + 1)
+								{
+							%>
+									<option value="<%=categorylist[a].categorynum%>"><%=categorylist[a].categoryname%></option>
+							<%
+								}
+							%>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<input id="addcategoryname" type="text" style="width:100px;"><input type="button" id="categoryAdd" value= "추가"/>
+						<input type ="button" id="categoryRemove" value="삭제">
+					</td>
+				</tr>
+			</table>
+		</div>
+
+
+		<footer>
+		<%- include('./footer.ejs') %>
+		</footer>
+
+<script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
+<script>
+
+	$(document).ready(function(){
+		$('#categoryAdd').click(function(){
+			var text = $('#addcategoryname').val();
+
+			$.ajax({
+				type: 'POST',
+				url: "/AddCategory",
+				data: {
+					categoryname:text
+				},
+				success: function(){
+					location.reload();
+				}
+			});
+		});
+
+		$('#categoryRemove').click(function(){
+			var selectedCategory = $('#category option:selected').val();
+
+			$.ajax({
+				type: 'POST',
+				url: "/DeleteCategory",
+				data:{
+					categoryNumber:selectedCategory
+				},
+				success: function(){
+					location.reload();
+				}
+			})
+		});
+	});
+
+</script>
+
+	</body>
+	
+</html>

@@ -10,6 +10,9 @@ const session = require('express-session');
 const FileStore = require('session-file-store')(session);
 var LoadDiary = require('./LoadDiary.js');
 var moment = require('moment'); 
+var LoadCategory = require('./LoadCategory');
+var utils = require('./util');
+
 require('moment-timezone'); 
 moment.tz.setDefault("Asia/Seoul");
 
@@ -36,6 +39,7 @@ app.get('/', function (req, res) {
     res.render('template.ejs',{UserId:req.session.uid, 
                               UserPassword:req.session.password,
                               UserName:req.session.UserName,
+                              CategoryNumber:req.session.categoryNumber,
                               Permission:ConfirmLogin.Permission});
     console.log('Main Page');
 });
@@ -52,6 +56,7 @@ app.post('/ConfirmLogin', async function(req, res){
     req.session.uid = rows[0].id;
     req.session.password = rows[0].password;
     req.session.UserName = rows[0].name;
+    req.session.categoryNumber = rows[0].categoryNumber;
     req.session.save(function(){
       res.send("");
     })
@@ -81,13 +86,52 @@ app.get('/regist', function(req, res){
   
 });
 
+app.get('/managing', async function(req, res){
+  
+  var categoryrows = await LoadCategory.SelectCategory(conn, req.session.uid);
 
+  res.render('managing.ejs',{
+    UserId:req.session.uid, 
+    UserPassword:req.session.password,
+    UserName:req.session.UserName,
+    categorylist:categoryrows,
+    Permission:ConfirmLogin.Permission
+  });
+
+});
+
+app.post('/AddCategory', async function(req, res){
+
+  var CategoryName = req.body.categoryname;
+  var CategoryNumber = await ConfirmLogin.getCategoryNumber(conn, req.session.uid);
+
+   LoadCategory.InsertCategory(conn, req.session.uid, CategoryName, CategoryNumber[0].categoryNumber);
+  
+  ConfirmLogin.plusCategoryNumber(conn, req.session.uid, parseInt(CategoryNumber[0].categoryNumber)+1);
+  
+  res.send("");
+});
+
+
+app.post('/DeleteCategory', async function(req, res){
+
+  var CategoryNumber = req.body.categoryNumber;
+
+   LoadCategory.DeleteCategory(conn, req.session.uid, CategoryNumber);
+  
+  res.send("");
+});
 
 app.get('/page', async function(req, res){
   
-  var rows = await LoadDiary.LoadDiaryList(conn, 1);
+  var rows = await LoadDiary.LoadDiaryList(conn, 1, req.session.uid);
+  var categoryrows = await LoadCategory.SelectCategory(conn, req.session.uid);
+
+  rows = utils.matchingName(rows, categoryrows);
+
   res.render('template.ejs',{
     PageNum:"1", 
+    categorylist:categoryrows,
     list:rows,
     UserId:req.session.uid, 
     UserPassword:req.session.password,
@@ -98,10 +142,16 @@ app.get('/page', async function(req, res){
 });
 
 app.get('/page/:pageNum', async function(req, res){
+
   var page = req.params.pageNum;
-  var rows = await LoadDiary.LoadDiaryList(conn, page);
+  var rows = await LoadDiary.LoadDiaryList(conn, page, req.session.uid);
+  var categoryrows = await LoadCategory.SelectCategory(conn, req.session.uid);
+  
+  rows = utils.matchingName(rows, categoryrows);
+
+
   res.render('template.ejs',{
-    PageNum:page,  
+    PageNum:page,   
     list:rows,
     UserId:req.session.uid, 
     UserPassword:req.session.password,
@@ -129,12 +179,11 @@ app.post('/writeDiary', async function(req, res){
 	var title = req.body.title;
   var content = req.body.content;
   var image = null;
-  var date = moment().format('YYYY-MM-DD HH:mm:ss');
-  
+  var date = moment().format('YYYY-MM-DD HH:mm:ss'); 
+
   console.log(date);
 
   var  rownum = await LoadDiary.InsertDiary(conn, req.session.uid, title, date, emotion, weather, category, content, image);
-  console.log(rownum);
   res.send("");
 });
 

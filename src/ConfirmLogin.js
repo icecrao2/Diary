@@ -6,6 +6,31 @@ module.exports = {
     this.Permission = false;
   },
 
+  getCategoryNumber: function(conn, Id){
+    return new Promise(function(resolve,reject){
+      conn.query("select categoryNumber from user where id = ?", [Id], function(err, rows){
+        if(err){console.log(err);}
+        else
+        {
+          console.log(rows);
+          resolve(rows);
+        }
+      });
+    });
+  },
+
+  plusCategoryNumber: function(conn, Id, categoryNum){
+    return new Promise(function(resolve,reject){
+      conn.query("update `diary`.`user` set `categoryNumber` = ? WHERE `id` = ?", [categoryNum ,Id], function(err, rows){
+        if(err){console.log(err);}
+        else
+        {
+          resolve(rows);
+        }
+      });
+    });
+  },
+
   ConfirmIdPassword : function(conn, Id, Password){
     return new Promise(function(resolve, reject){
       conn.query("Select * from user where Id = ? and password = ?", [Id, Password], 
@@ -27,7 +52,7 @@ module.exports = {
 
   RegistUser : function(conn, id, password, name){
     return new (function(resolve, reject){
-      var done = conn.query("INSERT INTO diary.user VALUES (?, ?, ?)",[id, password, name],
+      var done = conn.query("INSERT INTO diary.user VALUES (?, ?, ?, ?)",[id, password, name, 1],
       function(err, rows){
         if(err){console.log(err);}
         else{

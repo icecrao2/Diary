@@ -2,7 +2,6 @@ var express = require('express');
 var db_config = require('./dbms/database.js');
 var conn = db_config.init();
 var app = express();
-var iconv = require('iconv-lite');
 const path = require('path');
 const ConfirmLogin = require('./ConfirmLogin.js');
 const bodyparser = require('body-parser');
@@ -12,14 +11,40 @@ var LoadDiary = require('./LoadDiary.js');
 var moment = require('moment'); 
 var LoadCategory = require('./LoadCategory');
 var utils = require('./util');
+const cookieParser = require('cookie-parser');
+
+module.exports = {
+  app,
+  session,
+  FileStore,
+  conn,
+  LoadDiary,
+  cookieParser
+}
 
 require('moment-timezone'); 
 moment.tz.setDefault("Asia/Seoul");
 
 db_config.connect(conn);
 
+
+app.use(cookieParser());
 app.use(bodyparser.urlencoded({extended:true}));
 app.use(bodyparser.json());
+app.use(function(req, res, next){
+
+  if(req.path=='/ConfirmLogin' || req.path == '/regist' || ConfirmLogin.Permission)
+  {
+    console.log(ConfirmLogin.Permission);
+    next();
+  }
+  else
+  {
+    console.log(ConfirmLogin.Permission);
+    res.render('BeforeLogintemplate.ejs');
+  }
+});
+
 
 app.use(session({  // 2
   secret: 'keyboard cat',  // 암호화
@@ -36,7 +61,8 @@ app.set('view engine','ejs');
 
 app.get('/', function (req, res) {
   
-    res.render('template.ejs',{UserId:req.session.uid, 
+    res.render('BeforeLogintemplate.ejs',{
+                              UserId:req.session.uid,
                               UserPassword:req.session.password,
                               UserName:req.session.UserName,
                               CategoryNumber:req.session.categoryNumber,
@@ -71,6 +97,10 @@ app.post('/Logout', function(req, res){
   req.session.destroy(function(){
     req.session;
   });
+    
+  res.clearCookie("searchKeyword");
+  res.clearCookie("firstDate");
+  res.clearCookie("secondDate");
 
   res.send("");
 });
@@ -123,14 +153,37 @@ app.post('/DeleteCategory', async function(req, res){
 });
 
 app.get('/page', async function(req, res){
-  
+
+  var keyword = req.cookies.searchKeyword;
+  var FirstDate = req.cookies.firstDate;
+  var SecondDate = req.cookies.secondDate;
+
+  var Search = {
+    'keyword':keyword,
+    'FirstDate':FirstDate,
+    'SecondDate':SecondDate
+  };
+ 
   var rows = await LoadDiary.LoadDiaryList(conn, 1, req.session.uid);
   var categoryrows = await LoadCategory.SelectCategory(conn, req.session.uid);
 
+  console.log(FirstDate);
+  console.log(SecondDate);
+  console.log(keyword);
+
+
+  if(typeof FirstDate != 'undefined')
+  {
+    rows = await LoadDiary.SearchDiary(conn, req.session.uid, FirstDate, SecondDate, keyword, 1);
+    console.log("검색함!");
+  }
+
   rows = utils.matchingName(rows, categoryrows);
+
 
   res.render('template.ejs',{
     PageNum:"1", 
+    "search":Search,
     categorylist:categoryrows,
     list:rows,
     UserId:req.session.uid, 
@@ -139,19 +192,38 @@ app.get('/page', async function(req, res){
     Permission:ConfirmLogin.Permission
   }); 
   console.log("done");
+
 });
 
+
 app.get('/page/:pageNum', async function(req, res){
+
+  var keyword = req.cookies.searchKeyword;
+  var FirstDate = req.cookies.firstDate;
+  var SecondDate = req.cookies.secondDate;
+
+  var Search = {
+    'keyword':keyword,
+    'FirstDate':FirstDate,
+    'SecondDate':SecondDate
+  };
 
   var page = req.params.pageNum;
   var rows = await LoadDiary.LoadDiaryList(conn, page, req.session.uid);
   var categoryrows = await LoadCategory.SelectCategory(conn, req.session.uid);
   
+  if(typeof FirstDate != 'undefined')
+  {
+    rows = await LoadDiary.SearchDiary(conn, req.session.uid, FirstDate, SecondDate, keyword ,page);
+    console.log("검색함!");
+  }
+
   rows = utils.matchingName(rows, categoryrows);
 
 
   res.render('template.ejs',{
     PageNum:page,   
+    "search":Search,
     list:rows,
     UserId:req.session.uid, 
     UserPassword:req.session.password,
@@ -159,6 +231,7 @@ app.get('/page/:pageNum', async function(req, res){
     Permission:ConfirmLogin.Permission
   });  
 });
+
 
 app.get('/write', function(req, res){
   var Weather = [1,2,3,4];
@@ -185,6 +258,23 @@ app.post('/writeDiary', async function(req, res){
 
   var  rownum = await LoadDiary.InsertDiary(conn, req.session.uid, title, date, emotion, weather, category, content, image);
   res.send("");
+});
+
+app.post('/SearchingDiary', function(req, res){
+
+	var FirstDate = req.body.FirstDate;
+	var SecondDate = req.body.SecondDate;
+	var SearchKeyword = req.body.SerachingKeyword;
+
+  console.log("DATE ==== " + FirstDate);
+
+	res.cookie('searchKeyword', SearchKeyword);
+	res.cookie('firstDate', FirstDate);
+	res.cookie('secondDate', SecondDate);
+
+  console.log("cookie = " + req.cookies.firstDate);
+
+	res.send("");
 });
 
 app.listen(3000, function () {

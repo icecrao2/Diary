@@ -13,14 +13,8 @@ var LoadCategory = require('./LoadCategory');
 var utils = require('./util');
 const cookieParser = require('cookie-parser');
 
-module.exports = {
-  app,
-  session,
-  FileStore,
-  conn,
-  LoadDiary,
-  cookieParser
-}
+var BoardRouter = require('./BoardRouter.js');
+app.use('/router', BoardRouter);
 
 require('moment-timezone'); 
 moment.tz.setDefault("Asia/Seoul");
@@ -260,22 +254,7 @@ app.post('/writeDiary', async function(req, res){
   res.send("");
 });
 
-app.post('/SearchingDiary', function(req, res){
 
-	var FirstDate = req.body.FirstDate;
-	var SecondDate = req.body.SecondDate;
-	var SearchKeyword = req.body.SerachingKeyword;
-
-  console.log("DATE ==== " + FirstDate);
-
-	res.cookie('searchKeyword', SearchKeyword);
-	res.cookie('firstDate', FirstDate);
-	res.cookie('secondDate', SecondDate);
-
-  console.log("cookie = " + req.cookies.firstDate);
-
-	res.send("");
-});
 
 app.listen(3000, function () {
   console.log('Listening on port 3000!');

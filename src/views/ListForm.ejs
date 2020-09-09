@@ -61,11 +61,11 @@
 				if(PageNum < 3)
 				{
 			%>
-					<a href="/Page/1">1</a>&nbsp; &nbsp;
-					<a href="/Page/2">2</a>&nbsp; &nbsp;
-					<a href="/Page/3">3</a>&nbsp; &nbsp;
-					<a href="/Page/4">4</a>&nbsp; &nbsp;
-					<a href="/Page/5">5</a>
+					<a href="/Diary/1">1</a>&nbsp; &nbsp;
+					<a href="/Diary/2">2</a>&nbsp; &nbsp;
+					<a href="/Diary/3">3</a>&nbsp; &nbsp;
+					<a href="/Diary/4">4</a>&nbsp; &nbsp;
+					<a href="/Diary/5">5</a>
 			<%
 				}
 			%>
@@ -75,11 +75,11 @@
 				{
 			%>	
 					
-					<a href="/Page/<%=PageNum - 2%>"><%=PageNum - 2%></a>&nbsp; &nbsp;
-					<a href="/Page/<%=PageNum - 1%>"><%=PageNum - 1%></a>&nbsp; &nbsp;
-					<a href="/Page/<%=PageNum%>"><%=PageNum%></a>&nbsp; &nbsp;
-					<a href="/Page/<%=1 + parseInt(PageNum)%>"><%=1 + parseInt(PageNum)%></a>&nbsp; &nbsp;
-					<a href="/Page/<%=2 + parseInt(PageNum)%>"><%=2 + parseInt(PageNum)%></a>
+					<a href="/Diary/<%=PageNum - 2%>"><%=PageNum - 2%></a>&nbsp; &nbsp;
+					<a href="/Diary/<%=PageNum - 1%>"><%=PageNum - 1%></a>&nbsp; &nbsp;
+					<a href="/Diary/<%=PageNum%>"><%=PageNum%></a>&nbsp; &nbsp;
+					<a href="/Diary/<%=1 + parseInt(PageNum)%>"><%=1 + parseInt(PageNum)%></a>&nbsp; &nbsp;
+					<a href="/Diary/<%=2 + parseInt(PageNum)%>"><%=2 + parseInt(PageNum)%></a>
 			<%
 				}
 			%>
@@ -104,14 +104,14 @@
 
 			$.ajax({
 				type: 'POST',
-				url: "/router/SearchingDiary",
+				url: "/Diary/SearchingDiary",
 				data: {
 					"SerachingKeyword":keyword,
 					"FirstDate":FirstDate,
 					"SecondDate":SecondDate
 				},
 				success: function(){
-					window.location.href="/page";
+					window.location.href="/Diary";
 				}
 			});
 		});
@@ -124,14 +124,14 @@
 
 			$.ajax({
 				type: 'POST',
-				url: "/router/SearchingDiary",
+				url: "/Diary/SearchingDiary",
 				data: {
 					"SerachingKeyword":'',
 					"FirstDate":'1997-02-22',
 					"SecondDate":'2100-12-31'
 				},
 				success: function(){
-					window.location.href="/page";
+					window.location.href="/Diary";
 				}
 			});
 		});

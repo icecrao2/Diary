@@ -34,12 +34,12 @@
 		$('#logout').click(function(){
 			$.ajax({
 				type: 'POST',
-				url: "/Logout",
+				url: "/User/Logout",
 				data: {
 
 				},
 				success: function(){
-					window.location.href='/';
+					window.location.href='/Diary/1';
 				}
 			});
 		});

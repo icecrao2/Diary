@@ -34,18 +34,18 @@
 			var pass = $('#Password').val();
 			$.ajax({
 				type: 'POST',
-				url: "/ConfirmLogin",
+				url: "/User/ConfirmLogin",
 				data: {
 					"id":id,
 					"password":pass
 				},
 				success: function(){
-					window.location.href='/Diary';
+					window.location.href='/Diary/1';
 				}
 			});
 		});
 		$("#regist").click(function(){
-			window.location.href = '/regist';
+			window.location.href = '/User/regist';
 		})
 	});
 </script>

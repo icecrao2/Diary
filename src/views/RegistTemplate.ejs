@@ -50,7 +50,7 @@
 		$('#regist').click(function(){
 			$.ajax({
 				type: 'POST',
-				url: "/regist-process",
+				url: "/User/regist-process",
 				data: {
 					"id":$('#ID').val(),
 					"password":$("#Password").val(),
@@ -58,7 +58,7 @@
 				},
 				success: function(){
 					alert("회원가입이 완료되었습니다.");
-					window.location.href='/';
+					window.location.href='/Diary/1';
 				}
 			});
 		});

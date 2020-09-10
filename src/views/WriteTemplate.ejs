@@ -42,7 +42,7 @@
 								for(var a = 0 ; a < category.length ; a = a + 1)
 								{
 							%>
-									<option value="<%=category[a]%>"><%=category[a]%></option>
+									<option value="<%=category[a].categorynum%>"><%=category[a].categoryname%></option>
 							<%
 								}
 							%>
@@ -72,6 +72,7 @@
 <script>
 	
 	$(document).ready(function(){
+
 		$('#Write').click(function(){
 			var emotion = $('#emotion option:selected').val();
 			var weather = $('#weather option:selected').val();
@@ -81,7 +82,7 @@
 			
 			$.ajax({
 				type: 'POST',
-				url: "/writeDiary",
+				url: "/Diary/writeDiary",
 				data: {
 					"emotion":emotion,
 					"weather":weather,
@@ -90,7 +91,7 @@
 					"content":content
 				},
 				success: function(){
-					window.location.href='/Diary';
+					window.location.href='/Diary/1';
 				}
 			});
 		});

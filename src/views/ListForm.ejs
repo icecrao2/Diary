@@ -93,7 +93,7 @@
 	
 	$(document).ready(function(){
 		$('#Write').click(function(){
-			window.location.href = "/write";
+			window.location.href = "/Diary/write";
 		});
 
 		$('#SearchingButton').click(function(){
@@ -108,19 +108,16 @@
 				data: {
 					"SerachingKeyword":keyword,
 					"FirstDate":FirstDate,
-					"SecondDate":SecondDate
+					"SecondDate":SecondDate,
+					"SearchingAll":'false'
 				},
 				success: function(){
-					window.location.href="/Diary";
+					window.location.href="/Diary/1";
 				}
 			});
 		});
 
 		$('#SearchingALL').click(function(){
-
-			$('#SearchingKeyword').val('');
-			$('#FirstDate').val('');
-			$('#SecondDate').val('');
 
 			$.ajax({
 				type: 'POST',
@@ -128,12 +125,15 @@
 				data: {
 					"SerachingKeyword":'',
 					"FirstDate":'1997-02-22',
-					"SecondDate":'2100-12-31'
+					"SecondDate":'2100-12-31',
+					"SearchingAll":'true'
 				},
 				success: function(){
-					window.location.href="/Diary";
+					window.location.href="/Diary/1";
 				}
 			});
+			
+				
 		});
 	});
 

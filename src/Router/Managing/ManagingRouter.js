@@ -11,6 +11,8 @@ var app = require('../../app.js');
 const bodyparser = require('body-parser');
 const session = require('express-session');
 const FileStore = require('session-file-store')(session);
+var ManagingCategoryService = require('../../Service/Managing/ManagingCategoryService.js');
+
 
 var conn = app.conn;
 
@@ -47,12 +49,9 @@ router.get('/', async function(req, res){
 router.post('/AddCategory', async function(req, res){
 
   var CategoryName = req.body.categoryname;
-  var CategoryNumber = await ConfirmLogin.getCategoryNumber(conn, req.session.uid);
 
-   LoadCategory.InsertCategory(conn, req.session.uid, CategoryName, CategoryNumber[0].categoryNumber);
-  
-  ConfirmLogin.plusCategoryNumber(conn, req.session.uid, parseInt(CategoryNumber[0].categoryNumber)+1);
-  
+  await ManagingCategoryService.AddCategory(conn, CategoryName, req.session.uid);
+
   res.send("");
 });
 
@@ -61,7 +60,7 @@ router.post('/DeleteCategory', async function(req, res){
 
   var CategoryNumber = req.body.categoryNumber;
 
-   LoadCategory.DeleteCategory(conn, req.session.uid, CategoryNumber);
+  await ManagingCategoryService.DeleteCategory(conn, req.session.uid, CategoryNumber);
   
   res.send("");
 });

@@ -9,7 +9,7 @@ var LoadDiary = require('../../LoadDiary.js');;
 var LoadCategory = require('../../LoadCategory');
 const ConfirmLogin = require('../../ConfirmLogin.js');
 var utils = require('../../util');
-
+var UserManageService = require('../../Service/User/UserManageService.js');
 
 var app = require('../../app.js');
 const bodyparser = require('body-parser');
@@ -36,18 +36,19 @@ router.use(session({  // 2
 
 router.post('/ConfirmLogin', async function(req, res){
 
-  var rows = await ConfirmLogin.ConfirmIdPassword(conn, req.body.id, req.body.password);
-  console.log(rows[0]);
-  
-  if(rows == false)
-    ConfirmLogin.Permission = false;
+  var UserInfo = await UserManageService.ConfirmLogin(conn, req.body.id, req.body.password);
+
+  if(utils.isEmpty(UserInfo))
+  {
+    res.send("");
+  }
   else
   {
-    ConfirmLogin.Permission = true;
-    req.session.uid = rows[0].id;
-    req.session.password = rows[0].password;
-    req.session.UserName = rows[0].name;
-    req.session.categoryNumber = rows[0].categoryNumber;
+    console.log(UserInfo.password);
+    req.session.uid = UserInfo.uid;
+    req.session.password = UserInfo.password;
+    req.session.UserName = UserInfo.UserName;
+    req.session.categoryNumber = UserInfo.categoryNumber;
 
     req.session.save(function(){
       res.send("");

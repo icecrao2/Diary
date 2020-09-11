@@ -4,6 +4,7 @@ var router = express.Router();
 
 const cookieParser = require('cookie-parser');
 var LoadCategory = require('../../LoadCategory');
+var LoadWeather = require('../../LoadWeather.js');
 const ConfirmLogin = require('../../ConfirmLogin.js');
 
 
@@ -11,8 +12,8 @@ var app = require('../../app.js');
 const bodyparser = require('body-parser');
 const session = require('express-session');
 const FileStore = require('session-file-store')(session);
-var ManagingCategoryService = require('../../Service/Managing/ManagingCategoryService.js');
-
+var ManagingCategoryRouter = require('./Category/ManagingCategoryRouter.js');
+var ManagingEmotionRouter = require('./Emotion/ManagingEmotionRouter.js');
 
 var conn = app.conn;
 
@@ -29,7 +30,8 @@ router.use(session({  // 2
   store: new FileStore()
 }));
 
-
+router.use('/Category', ManagingCategoryRouter);
+router.use('/Emotion', ManagingEmotionRouter);
 
 router.get('/', async function(req, res){
   
@@ -44,27 +46,6 @@ router.get('/', async function(req, res){
   });
 
 });
-
-
-router.post('/AddCategory', async function(req, res){
-
-  var CategoryName = req.body.categoryname;
-
-  await ManagingCategoryService.AddCategory(conn, CategoryName, req.session.uid);
-
-  res.send("");
-});
-
-
-router.post('/DeleteCategory', async function(req, res){
-
-  var CategoryNumber = req.body.categoryNumber;
-
-  await ManagingCategoryService.DeleteCategory(conn, req.session.uid, CategoryNumber);
-  
-  res.send("");
-});
-
 
 
 module.exports = router;

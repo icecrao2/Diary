@@ -1,12 +1,5 @@
-const cookieParser = require('cookie-parser');
 var LoadCategory = require('../../LoadCategory');
 const ConfirmLogin = require('../../ConfirmLogin.js');
-
-
-var app = require('../../app.js');
-const bodyparser = require('body-parser');
-const session = require('express-session');
-const FileStore = require('session-file-store')(session);
 
 
 module.exports = {

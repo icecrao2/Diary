@@ -1,4 +1,4 @@
-var LoadEmotoin = require('../../LoadEmotion.js');
+var LoadEmotion = require('../../LoadEmotion');
 const ConfirmLogin = require('../../ConfirmLogin.js');
 
 
@@ -8,11 +8,11 @@ module.exports = {
     return new Promise(async function(resolve, reject){
 
       
-      var CategoryNumber = await ConfirmLogin.getCategoryNumber(conn, uid);
+      var emotionNumber = await ConfirmLogin.getEmotionNumber(conn, uid);
       
-      LoadEmotoin.InsertCategory(conn, uid, EmotionName, CategoryNumber[0].categoryNumber);
+      LoadEmotion.InsertEmotion(conn, uid, EmotionName, emotionNumber[0].emotionNumber);
       
-//      ConfirmLogin.plusCategoryNumber(conn, uid, parseInt(CategoryNumber[0].categoryNumber)+1);
+      ConfirmLogin.plusEmotionNumber(conn, uid, parseInt(emotionNumber[0].emotionNumber)+1);
 
       resolve();
     });
@@ -21,7 +21,7 @@ module.exports = {
   DeleteEmotion : function(conn, uid, EmotionId){
 
     return new Promise(async function(resolve, reject){
-      await LoadEmotoin.DeleteCategory(conn, uid, EmotionId);
+      await LoadEmotion.DeleteEmotion(conn, uid, EmotionId);
 
       resolve();
     });

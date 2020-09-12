@@ -31,7 +31,7 @@ router.post('/AddEmotion', async function(req, res){
 
   var EmotionName = req.body.emotionname;
 
-  await ManagingEmotionService.AddCategory(conn, EmotionName, req.session.uid);
+  await ManagingEmotionService.AddEmotion(conn, EmotionName, req.session.uid);
 
   res.send("");
 });
@@ -41,7 +41,7 @@ router.post('/DeleteEmotion', async function(req, res){
 
   var EmotionId = req.body.emotionid;
 
-  await ManagingEmotionService.DeleteCategory(conn, req.session.uid, EmotionId);
+  await ManagingEmotionService.DeleteEmotion(conn, req.session.uid, EmotionId);
   
   res.send("");
 });

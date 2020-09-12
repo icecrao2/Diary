@@ -5,7 +5,7 @@ module.exports = {
 	InsertEmotion: function(conn, uid, emotionname, emotionid){
 		conn.query("insert into `diary`.`emotion`" + 
 		" (`emotionid`," + 
-		"`emotinoname`," + 
+		"`emotionname`," + 
 		"`UserID`) " + 
 		"VALUES" + 
 		" (?, ?, ?)", [emotionid, emotionname, uid], function(err, rows){

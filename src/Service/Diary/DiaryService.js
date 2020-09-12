@@ -4,6 +4,7 @@ const cookieParser = require('cookie-parser');
 var LoadDiary = require('../../LoadDiary.js');; 
 var LoadCategory = require('../../LoadCategory');
 var LoadWeather = require('../../LoadWeather');
+var LoadEmotion = require('../../LoadEmotion');
 const ConfirmLogin = require('../../ConfirmLogin.js');
 var utils = require('../../util');
 var moment = require('moment'); 
@@ -51,7 +52,8 @@ module.exports = {
       var rows;
       var categoryrows = await LoadCategory.SelectCategory(conn, uid);
       var weatherrows = await LoadWeather.SelectWeather(conn);
-      
+      var emotionrows = await LoadEmotion.SelectEmotion(conn, uid);
+
       var Search = {
 
       };
@@ -79,6 +81,12 @@ module.exports = {
 				{
 					rows.weather = weatherrows.weathername;
 				}
+      });
+      rows = utils.matchingName(rows, emotionrows, function(rows, emotionrows){
+        if(rows.emotion == emotionrows.emotionid)
+        {
+          rows.emotion = emotionrows.emotionname;
+        }
       });
 
       if(SearchingAll)

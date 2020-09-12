@@ -19,9 +19,34 @@ module.exports = {
     });
   },
 
+  getEmotionNumber: function(conn, Id){
+    return new Promise(function(resolve,reject){
+      conn.query("select emotionNumber from user where id = ?", [Id], function(err, rows){
+        if(err){console.log(err);}
+        else
+        {
+          console.log(rows);
+          resolve(rows);
+        }
+      });
+    });
+  },
+
   plusCategoryNumber: function(conn, Id, categoryNum){
     return new Promise(function(resolve,reject){
       conn.query("update `diary`.`user` set `categoryNumber` = ? WHERE `id` = ?", [categoryNum ,Id], function(err, rows){
+        if(err){console.log(err);}
+        else
+        {
+          resolve(rows);
+        }
+      });
+    });
+  },
+
+  plusEmotionNumber: function(conn, Id, emotionNumber){
+    return new Promise(function(resolve,reject){
+      conn.query("update `diary`.`user` set `emotionNumber` = ? WHERE `id` = ?", [emotionNumber ,Id], function(err, rows){
         if(err){console.log(err);}
         else
         {

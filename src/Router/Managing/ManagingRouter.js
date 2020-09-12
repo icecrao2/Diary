@@ -5,6 +5,7 @@ var router = express.Router();
 const cookieParser = require('cookie-parser');
 var LoadCategory = require('../../LoadCategory');
 var LoadWeather = require('../../LoadWeather.js');
+var LoadEmotion = require('../../LoadEmotion');
 const ConfirmLogin = require('../../ConfirmLogin.js');
 
 
@@ -36,12 +37,13 @@ router.use('/Emotion', ManagingEmotionRouter);
 router.get('/', async function(req, res){
   
   var categoryrows = await LoadCategory.SelectCategory(conn, req.session.uid);
-
+  var emotionrows = await LoadEmotion.SelectEmotion(conn, req.session.uid)
   res.render('managing.ejs',{
     UserId:req.session.uid, 
     UserPassword:req.session.password,
     UserName:req.session.UserName,
     categorylist:categoryrows,
+    emotionlist:emotionrows,
     Permission:ConfirmLogin.Permission
   });
 

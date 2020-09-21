@@ -76,6 +76,20 @@ router.get('/write', async function(req, res){
 });
 
 
+router.get('/List/:pageNum', async function(req, res){
+
+  var pageContent = await DiaryService.loadContent(conn, req.params.pageNum, req.session.uid);
+
+  res.render('ContentTemplate.ejs', {
+    title:pageContent[0].title,
+    weather:pageContent[0].weather,
+    emotion:pageContent[0].emotion,
+    category:pageContent[0].category,
+    content:pageContent[0].Content
+  });
+});
+
+
 router.get('/:pageNum', async function(req, res){
 
   var PageInfo =  await DiaryService.Paging(

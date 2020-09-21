@@ -31,6 +31,30 @@ module.exports = {
 			{ return true }
 		else
 			{ return false } 
+	},
+	
+	matchingEveryName: function(rows, categoryrows, weatherrows, emotionrows){
+		rows = this.SetDefaultCategory(rows);
+    	rows = this.matchingName(rows, categoryrows, function(rows, categoryrows){
+			if(rows.category == categoryrows.categorynum)
+			{
+				rows.category = categoryrows.categoryname;
+			}
+    	});
+      
+      	rows = this.matchingName(rows, weatherrows, function(rows, weatherrows){
+			if(rows.weather == weatherrows.weatherid)
+			{
+				rows.weather = weatherrows.weathername;
+			}
+		});
+      	rows = this.matchingName(rows, emotionrows, function(rows, emotionrows){
+    	    if(rows.emotion == emotionrows.emotionid)
+			{
+				rows.emotion = emotionrows.emotionname;
+			}
+	  });
+	  return rows;
 	}
 
 }

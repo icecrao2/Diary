@@ -30,7 +30,7 @@
 			if(typeof list[a] != 'undefined')
 			{
 	%>
-			<tr>
+			<tr class="list" onclick="pagingList(<%=list[a].boardid%>)">
 				<td><%=list[a].date%></td>
 				<td><%=list[a].emotion%></td>
 				<td><%=list[a].category%></td>
@@ -90,8 +90,16 @@
 
 <script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
 <script>
-	
+
+
+	function pagingList(value){
+		window.location.href = "/Diary/List/"+value;
+	};
+
 	$(document).ready(function(){
+
+
+
 		$('#Write').click(function(){
 			window.location.href = "/Diary/write";
 		});
@@ -135,6 +143,19 @@
 			
 				
 		});
+
+
+		$('.list').hover(function(){
+			$('.list').css('cursor', 'pointer');
+			$(this).css("text-decoration", "underline");
+		});
+
+		$('.list').mouseleave(function(){
+			$('.list').css('cursor', 'default');
+			$(this).css("text-decoration", "none");
+		});
+
+
 	});
 
 </script>

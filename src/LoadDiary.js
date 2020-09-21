@@ -59,5 +59,17 @@ module.exports = {
 						} 
 			)
 		});
+	},
+
+	SelectDiary : function(conn, boardid){
+		return new Promise(function(resolve, reject){
+			conn.query("select * from board where boardid = ?", [boardid], 
+			function(err, rows){
+				if(err){console.log(err);}
+				else{
+					resolve(rows);
+				}
+			})
+		});
 	}
 }

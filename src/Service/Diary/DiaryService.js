@@ -44,10 +44,25 @@ module.exports = {
     });
   },
 
+  loadContent : function(conn, boardid, uid){
+    return new Promise(async function(resolve, reject){
+
+      boardid = parseInt(boardid);
+
+      var categoryrows = await LoadCategory.SelectCategory(conn, uid);
+      var weatherrows = await LoadWeather.SelectWeather(conn);
+      var emotionrows = await LoadEmotion.SelectEmotion(conn, uid);
+      var rows = await LoadDiary.SelectDiary(conn, boardid);
+
+      rows = utils.matchingEveryName(rows, categoryrows, weatherrows, emotionrows);
+
+      resolve(rows);
+    });
+  },
+
   Paging: function(conn, keyword, FirstDate, SecondDate, page, uid, SearchingAll){
 
     return new Promise(async function(resolve, reject){
-      
       
       var rows;
       var categoryrows = await LoadCategory.SelectCategory(conn, uid);
@@ -63,34 +78,21 @@ module.exports = {
       {
         rows = await LoadDiary.SearchDiary(conn, uid, FirstDate, SecondDate, keyword ,page);
       }
+      else if(!utils.isEmpty(keyword))
+      {
+        rows = await LoadDiary.SearchDiary(conn, uid, '1997-02-22', '2100-12-31', keyword, page);
+      }
       else
       {
         rows = await LoadDiary.LoadDiaryList(conn, page, uid);
       }
 
-      rows = utils.SetDefaultCategory(rows);
-      rows = utils.matchingName(rows, categoryrows, function(rows, categoryrows){
-        if(rows.category == categoryrows.categorynum)
-				{
-					rows.category = categoryrows.categoryname;
-				}
-      });
-      
-      rows = utils.matchingName(rows, weatherrows, function(rows, weatherrows){
-        if(rows.weather == weatherrows.weatherid)
-				{
-					rows.weather = weatherrows.weathername;
-				}
-      });
-      rows = utils.matchingName(rows, emotionrows, function(rows, emotionrows){
-        if(rows.emotion == emotionrows.emotionid)
-        {
-          rows.emotion = emotionrows.emotionname;
-        }
-      });
+      rows = utils.matchingEveryName(rows, categoryrows, weatherrows, emotionrows);
 
-      if(SearchingAll)
+      console.log("Why this not? :: " + SearchingAll);
+      if(SearchingAll == 'true')
       {
+        console.log("true!!!!");
         Search = {
           'keyword':'',
           'FirstDate':'',
@@ -99,6 +101,7 @@ module.exports = {
       }
       else
       {
+        console.log("false!!!!");
         Search = {
           'keyword':keyword,
           'FirstDate':FirstDate,
@@ -106,6 +109,8 @@ module.exports = {
         };
       }
       
+      console.log(Search);
+      console.log(FirstDate);
       resolve({
         Search:Search,
         rows:rows
